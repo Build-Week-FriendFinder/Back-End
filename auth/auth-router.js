@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 
-const db = require('./auth-helpers');
+const db = require('./helpers');
 const generateToken = require('./generateToken');
 
 router.post('/register', (req, res) => {

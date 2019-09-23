@@ -4,7 +4,7 @@ module.exports = {
   addUser,
   findUser,
   findUserBy,
-  findById,
+  findUserById,
 };
 
 function findUser() {

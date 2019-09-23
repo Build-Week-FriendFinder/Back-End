@@ -5,7 +5,7 @@ server.get('/', (req, res)=>{
   })
 
 server.all('*', (req,res)=>{
-    res.status(404).send("How did you get here?")
+    res.status(404).send({ message: "How did you get here?" })
   })
 
 const PORT = process.env.PORT || 5000;
