@@ -2,7 +2,11 @@ const jwt = require('jsonwebtoken');
 const secret = require('../config/secrets');
 const db = require('./helpers');
 
-module.exports = 
+module.exports = {
+  authenticate,
+  checkUserCreds,
+  checkUserExists
+}
 
 function authenticate (req, res, next) {
   const token = req.headers.authorization;
@@ -24,19 +28,22 @@ function authenticate (req, res, next) {
 };
 
 async function checkUserCreds(req, res, next) {
-  if (!req.body.email || !req.body.password)
-    res.status(400).json({ message: 'Send an email and password in body' });
+  if (!req.body.name || !req.body.email || !req.body.password || !req.body.dob)
+    res.status(400).json({ message: 'Request missing required information' });
   else next();
 }
 
-async function checkUserExists(req, res, next) {
-  const { email } = req.body;
-  try {
-    const emailInDb = await db.findByEmail(email);
-    if (emailInDb && emailInDb.email === email) {
-      res.status(401).json({ message: 'Email already in use' });
-    } else next();
-  } catch (err) {
-    res.status(500).json({ message: 'Error accessing users' });
-  }
+function checkUserExists(req, res, next) {
+    const { email } = req.body.email
+    db.findUserBy({ email } === email)
+    .first()
+    .then(user => {
+      if (user && user.email === email) {
+        res.status(401).json({ message: 'Email already in use' });
+      } else next();
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ error: "Server error checking if user exists." })
+    })
 }

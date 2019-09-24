@@ -3,8 +3,9 @@ const bcrypt = require('bcryptjs');
 
 const db = require('./helpers');
 const generateToken = require('./generateToken');
+const { checkUserCreds, checkUserExists } = require('./authenticate-middleware');
 
-router.post('/register', (req, res) => {
+router.post('/register', checkUserCreds, checkUserExists, (req, res) => {
   const user = req.body;
   const hash = bcrypt.hashSync(user.password, 12);
   user.password = hash;
@@ -21,16 +22,16 @@ router.post('/register', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
-  let { username, password } = req.body;
+  let { email, password } = req.body;
 
-  db.findUserBy({ username })
+  db.findUserBy({ email })
     .first()
     .then(user => {
       if (user && bcrypt.compareSync(password, user.password)) {
         const token = generateToken(user);
 
         res.status(200).json({
-          message: `Welcome ${user.username}!`,
+          message: `Welcome ${user.name}!`,
           token
         });
       } else {
