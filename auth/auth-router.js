@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 
 const db = require('./helpers');
 const generateToken = require('./generateToken');
-const { checkUserCreds, checkUserExists } = require('./authenticate-middleware');
+const { checkUserCreds, checkUserExists } = require('./middleware');
 
 router.post('/register', checkUserCreds, checkUserExists, (req, res) => {
   const user = req.body;
