@@ -3,7 +3,7 @@ const db = require('../data/dbConfig.js');
 module.exports = {
   addUser,
   findUsers,
-  findUserBy,
+  findUserByEmail,
   findUserById,
   updateUser,
   getUserHobbies,
@@ -18,7 +18,7 @@ module.exports = {
   sendMessage,
   getMessages,
   getSwipeableUsers,
-  addFriendship,
+  checkAddFriendship,
   deleteFriendship,
   deleteSwipes,
   getFriends,
@@ -29,14 +29,12 @@ function findUsers() {
   return db('users').select('*');
 }
 
-function findUserBy(filter) {
-  return db('users').where(filter);
+function findUserByEmail(email) {
+  return db('users').where('email', email).first();
 }
 
-async function addUser(user) {
-  const [user_id] = await db('users').insert(user);
-
-  return findUserById(user_id);
+function addUser(user) {
+  return db('users').insert(user);
 }
 
 function findUserById(user_id) {
@@ -145,14 +143,18 @@ function getSwipeableUsers(user_id) {
   .orderBy('user_id');
 }
 
-async function addFriendship(swiper_id, swiped_id) {
-  const [ response ]= await db('swipes')
+async function checkAddFriendship(swiper_id, swiped_id) {
+  const [ response ] = await db('swipes')
   .where('swiper_id', swiped_id)
   .andWhere('swiped_id', swiper_id)
   .select('requested', 'declined');
-  if (response.requested === 1) {
+  if (response) {
+    if (response.requested ===1){
     return db('friends')
     .insert({ user_id: swiper_id, friend_id: swiped_id });
+    } else {
+      return JSON.stringify({message: "Request swipe added."})
+    }
   } else {
     return JSON.stringify({message: "Request swipe added."})
   }
@@ -177,19 +179,23 @@ function deleteSwipes(user_id, friend_id) {
 }
 
 function getFriends(user_id) {
-  return db('users as u')
-  .join('friends as f', 'f.user_id', 'u.user_id')
-  .whereNot('u.user_id', user_id)
-  .andWhere('f.user_id', user_id)
-  .orWhere('f.friend_id', user_id)
-  .distinct('user_id', 'name', 'dob', 'gender', 'coordinates', 'location', 'profile_img', 'bio')
+  return db.distinct('u.user_id', 'u.name', 'u.dob', 'u.gender', 'u.coordinates', 'u.location', 'u.profile_img', 'u.bio')
+  .from('users as u')
+  .crossJoin('friends as f', function(){
+    this.on('f.user_id', '=', 'u.user_id').orOn('f.friend_id', '=', 'u.user_id')
+  })
+  .where('u.user_id', '!=', user_id)
+  .where(function(){
+    this.where('f.user_id', user_id).orWhere('f.friend_id', user_id)
+  });
 }
 
 function getRequests(user_id) {
   return db('users as u')
   .join('swipes as s', 's.swiper_id', 'u.user_id')
-  .where('s.swiped_id', user_id)
+  .where('u.user_id', 's.swiper_id')
+  .andWhere('s.swiped_id', user_id)
   .andWhere('s.requested', 1)
-  .andWhere('s.swiper_id', 'u.user_id')
-  .distinct('user_id', 'name', 'dob', 'gender', 'coordinates', 'location', 'profile_img', 'bio')
+  .select('u.user_id', 'u.name', 'u.dob', 'u.gender', 'u.coordinates', 'u.location', 'u.profile_img', 'u.bio')
+  .orderBy('u.user_id');
 }
