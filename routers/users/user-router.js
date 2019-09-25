@@ -10,7 +10,8 @@ router.post('/hobbies/:user_id', validateUserId, (req, res) => {
     const hobby = req.body;
     db.addHobbyToUser(user_id, hobby)
     .then(saved => {
-        db.findHobbyById(saved[0])
+        const [ hobby_id ] = saved;
+        db.findHobbyById(hobby_id)
         .then(response => {
             res.status(201).json(response)
         })
