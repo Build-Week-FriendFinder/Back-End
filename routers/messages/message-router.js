@@ -19,6 +19,8 @@ router.post('/:user_id/:friend_id', validateUserId, validateFriendId, (req, res)
     })
 });
 
+// Get messages between users
+
 router.get('/:user_id/:friend_id', validateUserId, validateFriendId, (req, res) => {
     const { user_id, friend_id } = req.params;
 
