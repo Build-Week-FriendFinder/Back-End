@@ -139,7 +139,7 @@ function getSwipeableUsers(user_id) {
   return db('users')
   .whereNotIn('user_id', subquery)
   .andWhere('user_id', '!=', user_id)
-  .select('name', 'dob', 'gender', 'coordinates', 'location', 'profile_img', 'bio')
+  .select('user_id as friend_id', 'name', 'dob', 'gender', 'coordinates', 'location', 'profile_img', 'bio')
   .orderBy('user_id');
 }
 
@@ -194,6 +194,6 @@ function getRequests(user_id) {
   const subquery = db('swipes').where('swiped_id', user_id).andWhere('requested', 1).distinct('swiper_id')
   return db('users')
   .whereIn('user_id', subquery)
-  .select('name', 'dob', 'gender', 'coordinates', 'location', 'profile_img', 'bio')
+  .select('user_id as friend_id', 'name', 'dob', 'gender', 'coordinates', 'location', 'profile_img', 'bio')
   .orderBy('user_id');
 }
