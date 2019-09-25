@@ -147,4 +147,22 @@ router.get('/:user_id/swipeable', validateUserId, (req, res) => {
     })
 })
 
+// Get list of users that the user has been requested by
+
+router.get('/:user_id/requests', validateUserId, (req, res) => {
+    const { user_id } = req.params;
+    db.getRequests(user_id)
+    .then(users => {
+        if (users != false) {
+            res.status(200).json(users);
+        } else {
+            res.status(200).json({ message: "You have no requests currently." })
+        }
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({ error: "Server error getting requests."})
+    })
+})
+
 module.exports = router;

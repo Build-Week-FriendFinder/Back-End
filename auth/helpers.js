@@ -20,7 +20,9 @@ module.exports = {
   getSwipeableUsers,
   addFriendship,
   deleteFriendship,
-  deleteSwipes
+  deleteSwipes,
+  getFriends,
+  getRequests
 };
 
 function findUsers() {
@@ -172,4 +174,22 @@ function deleteSwipes(user_id, friend_id) {
   .where('swiper_id', user_id)
   .andWhere('swiped_id', friend_id)
   .del()
+}
+
+function getFriends(user_id) {
+  return db('users as u')
+  .join('friends as f', 'f.user_id', 'u.user_id')
+  .whereNot('u.user_id', user_id)
+  .andWhere('f.user_id', user_id)
+  .orWhere('f.friend_id', user_id)
+  .distinct('user_id', 'name', 'dob', 'gender', 'coordinates', 'location', 'profile_img', 'bio')
+}
+
+function getRequests(user_id) {
+  return db('users as u')
+  .join('swipes as s', 's.swiper_id', 'u.user_id')
+  .where('s.swiped_id', user_id)
+  .andWhere('s.requested', 1)
+  .andWhere('s.swiper_id', 'u.user_id')
+  .distinct('user_id', 'name', 'dob', 'gender', 'coordinates', 'location', 'profile_img', 'bio')
 }

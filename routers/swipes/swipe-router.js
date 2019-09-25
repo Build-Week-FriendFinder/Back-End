@@ -1,8 +1,7 @@
-// Decline, Request
 const router = require('express').Router();
 const db = require('../../auth/helpers');
 
-const { validateSwiperId, validateSwipedId, checkUserCreds } = require('../../auth/middleware');
+const { validateSwiperId, validateSwipedId } = require('../../auth/middleware');
 
 // Decline swipe
 
@@ -30,15 +29,7 @@ router.post('/:swiper_id/:swiped_id/request', validateSwiperId, validateSwipedId
         db.addFriendship(swiper_id, swiped_id)
         .then(response => {
             console.log(response);
-            db.addFriendship(swiped_id, swiper_id)
-            .then(response => {
-                console.log(response);
                 res.status(201).json({message: "You are now friends!"});
-            })
-            .catch(err => {
-                console.log(err);
-                res.status(500).json({error: "Server error adding both to friend list."});
-            });
         })
         .catch(err => {
             console.log(err);

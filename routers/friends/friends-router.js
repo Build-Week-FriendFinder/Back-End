@@ -1,9 +1,21 @@
-// addFriend, getFriends, getFriendByID and deleteFriend
-
 const router = require('express').Router();
 const db = require('../../auth/helpers');
 
 const { validateUserId, validateFriendId } = require('../../auth/middleware');
+
+// Gets user's friends
+
+router.get('/:user_id', validateUserId, (req, res) => {
+  const { user_id } = req.params;
+  db.getFriends(user_id)
+  .then(friends => {
+    res.status(200).json(friends);
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({error: "Server error getting friends."});
+  })
+})
 
 // Deletes Friend
 
