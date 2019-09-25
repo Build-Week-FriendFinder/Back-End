@@ -26,10 +26,10 @@ router.post('/:swiper_id/:swiped_id/request', validateSwiperId, validateSwipedId
     .then(response => {
         console.log(response);
         // Checks if the swiped user has requested you as well and adds you as friends if so.
-        db.addFriendship(swiper_id, swiped_id)
+        db.checkAddFriendship(swiper_id, swiped_id)
         .then(response => {
             console.log(response);
-                res.status(201).json({message: "You are now friends!"});
+                res.status(201).json({message: "Request sent! You might be friends already!"});
         })
         .catch(err => {
             console.log(err);
