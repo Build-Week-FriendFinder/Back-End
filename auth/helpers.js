@@ -191,11 +191,9 @@ function getFriends(user_id) {
 }
 
 function getRequests(user_id) {
-  return db('users as u')
-  .join('swipes as s', 's.swiper_id', 'u.user_id')
-  .where('u.user_id', 's.swiper_id')
-  .andWhere('s.swiped_id', user_id)
-  .andWhere('s.requested', 1)
-  .select('u.user_id', 'u.name', 'u.dob', 'u.gender', 'u.coordinates', 'u.location', 'u.profile_img', 'u.bio')
-  .orderBy('u.user_id');
+  const subquery = db('swipes').where('swiped_id', user_id).andWhere('requested', 1).distinct('swiper_id')
+  return db('users')
+  .whereIn('user_id', subquery)
+  .select('name', 'dob', 'gender', 'coordinates', 'location', 'profile_img', 'bio')
+  .orderBy('user_id');
 }
