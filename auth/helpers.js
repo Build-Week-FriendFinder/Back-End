@@ -161,7 +161,7 @@ async function checkAddFriendship(swiper_id, swiped_id) {
 }
 
 function deleteFriendship(user_id, friend_id) {
-  db('friends')
+  return db('friends')
   .where(function(){
     this.where('user_id', user_id).orWhere('user_id', friend_id)
   })
@@ -175,7 +175,7 @@ function deleteSwipes(user_id, friend_id) {
   return db('swipes')
   .where('swiper_id', user_id)
   .andWhere('swiped_id', friend_id)
-  .del()
+  .del();
 }
 
 function getFriends(user_id) {
