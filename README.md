@@ -1,10 +1,22 @@
 # Friend Finder API #
 
-## Base API: ##
+## Table of Contents: ##
+
+<div>
+| <a href="#base-api">Base_Api</a> 
+| <a href="#auth-endpoints">Auth_Endpoints</a> 
+| <a href="#user-endpoints">User_Endpoints</a> 
+| <a href="#message-endpoints">Message_Endpoints</a> 
+| <a href="#friend-endpoints">Friend_Endpoints</a> 
+| <a href="#swipe-endpoints">Swipe_Endpoints</a> 
+| <a href="#error-responses">Error_Responses</a> |
+</div>
+
+## Base API ##
 https://friend-finder-levi.herokuapp.com/api
 (All CRUD calls will be made to this url + /[listed endpoint])
 
-## Auth Endpoints: ##
+## Auth Endpoints ##
 
 ### Register ###
 
@@ -63,7 +75,7 @@ Be sure to save the ${auth_token} to local storage as all requests below this po
 ie: (authorization: ${auth_token}) should be part of your req.header in your axiosWithAuth function.
 ___
 
-## User Endpoints: ##
+## User Endpoints ##
 
 ### Get List of all Users ###
 
@@ -228,14 +240,15 @@ Responds with either:
 ```
 [
     {
-        user_object1
-    },
-    {
-        user_object2
-    },
-    {
-        user_object3
-    }
+        "user_id": "1",
+        "name": "Levi",
+        "dob": "1994-09-21",
+        "gender": "Male",
+        "coordinates": NULL,
+        "location": NULL,
+        "profile_img": NULL,
+        "bio": "This is your friend's bio"
+    }, ...
 ]
 ```
 
@@ -262,14 +275,15 @@ Responds with either:
 ```
 [
     {
-        user_object1
-    },
-    {
-        user_object2
-    },
-    {
-        user_object3
-    }
+        "user_id": "1",
+        "name": "Levi",
+        "dob": "1994-09-21",
+        "gender": "Male",
+        "coordinates": NULL,
+        "location": NULL,
+        "profile_img": NULL,
+        "bio": "This is your friend's bio"
+    }, ...
 ]
 ```
 
@@ -283,7 +297,7 @@ or:
 
 if there are no requests.
 
-## Message Endpoints: ##
+## Message Endpoints ##
 
 ### Send Message ###
 
@@ -326,21 +340,103 @@ Responds with:
         "from_id": "1",
         "to_id": "2",
         "message": "Hello friend!"
-    }
+    }, ...
 ]
 ```
 
-## Friend Endpoints: ##
+## Friend Endpoints ##
 
 ### Get User's Friends ###
 
+> Listed endpoint:
+>> GET /friends/:user_id
 
+Gets an array of all the user's friends.
+
+Successful status (200):
+Responds with:
+
+```
+[
+    {
+        "user_id": "1",
+        "name": "Levi",
+        "dob": "1994-09-21",
+        "gender": "Male",
+        "coordinates": NULL,
+        "location": NULL,
+        "profile_img": NULL,
+        "bio": "This is your friend's bio"
+    }, ...
+]
+```
 
 ### Delete Friend ###
 
-## Swipe Endpoints: ##
+> Listed endpoint:
+>> DELETE /friends/:user_id/:friend_id
+
+Removes the given users from your friends list, deletes all previous swipes you had on the given user, and adds a new decline swipe to the Swipes database so that the user will no longer show up in your swipeable users list.
+
+Successful status (200):
+Responds with:
+
+```
+{
+    message: "You'll never see that guy again."
+}
+```
+
+## Swipe Endpoints ##
 
 ### Decline Swipe ###
+
+> Listed endpoint:
+>> POST /swipe/:swiper_id/:swiped_id/decline
+
+Creates a "decline swipe" which denotes that the active/swiping user (denoted by swiper_id) does not want to be friends with the user being swiped on (denoted by swiped_id).
+
+Successful status (201):
+Responds with:
+
+```
+{
+    message: "Decline swipe added."
+}
+```
+
 ### Request Swipe ###
 
+> Listed endpoint:
+>> POST /swipe/:swiper_id/:swiped_id/request
+
+Creates a "request swipe" which denotes that the active/swiping user (denoted by swiper_id) wants to be friends with the user being swiped on (denoted by swiped_id). 
+
+After the swipe is posted to the database, the API will automatically check if the swiped user has also requested the swiper. If so, the friendship is added to the Friends database and the users will show up in each other's friend lists. Else it will simply add the request swipe.
+
+Successful status (201):
+Responds with:
+
+```
+{
+    message: "Request sent! You might be friends already!"
+}
+```
+
 ## Error Responses ##
+
+### 40X Responses ###
+
+> Status 400:
+>> Bad Request (Request body is missing required information)
+
+> Status 401:
+>> Unauthorized (Usually in reference to something already in use or data that already exists but that the user doesn't have access to)
+
+> Status 404:
+>> Not Found (The data requested doesn't exist)
+
+### 50X Responses ###
+
+> Status 500:
+>> Internal Server Error (Either I messed up or the server is currently down)
