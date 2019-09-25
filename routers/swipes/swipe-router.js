@@ -19,14 +19,31 @@ router.post('/:swiper_id/:swiped_id/decline', validateSwiperId, validateSwipedId
     })
 })
 
-// Request swipe
+// Request swipe + friend addition if both users are requesting each other
 
 router.post('/:swiper_id/:swiped_id/request', validateSwiperId, validateSwipedId, (req, res) => {
     const { swiper_id, swiped_id } = req.params;
     db.Request(swiper_id, swiped_id)
     .then(response => {
         console.log(response);
-        res.status(201).json({message: "Request swipe added."})
+        // Checks if the swiped user has requested you as well and adds you as friends if so.
+        db.addFriendship(swiper_id, swiped_id)
+        .then(response => {
+            console.log(response);
+            db.addFriendship(swiped_id, swiper_id)
+            .then(response => {
+                console.log(response);
+                res.status(201).json({message: "You are now friends!"});
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(500).json({error: "Server error adding both to friend list."});
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({error: "Server error checking friendship status."});
+        })
     })
     .catch(err => {
         console.log(err);

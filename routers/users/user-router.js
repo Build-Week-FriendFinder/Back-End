@@ -129,4 +129,22 @@ router.delete('/:user_id', validateUserId, (req, res) => {
     });
 });
 
+// Get swipeable users
+
+router.get('/:user_id/swipeable', validateUserId, (req, res) => {
+    const { user_id } = req.params;
+    db.getSwipeableUsers(user_id)
+    .then(users => {
+        if (users != false) {
+            res.status(200).json(users);
+        } else {
+            res.status(200).json({ message: "You've swiped on all available users!" })
+        }
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({ error: "Server error getting swipeable users."})
+    })
+})
+
 module.exports = router;

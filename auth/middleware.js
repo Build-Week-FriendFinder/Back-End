@@ -7,6 +7,7 @@ module.exports = {
   checkUserCreds,
   checkUserExists,
   validateUserId,
+  validateFriendId,
   validateSwiperId,
   validateSwipedId
 }
@@ -65,6 +66,26 @@ function validateUserId(req, res, next) {
       .catch(err => {
           console.log(err);
           res.status(500).json({ error: "Server error getting user by id"})
+      });
+  } else {
+      next();
+  }
+};
+
+function validateFriendId(req, res, next) {
+  const { friend_id } = req.params;
+  if(friend_id) {
+      db.findUserById(friend_id)
+      .then(user => {
+          if(user) {
+              next();
+          } else {
+              res.status(404).json({ error: "Invalid friend id" });
+          }
+      })
+      .catch(err => {
+          console.log(err);
+          res.status(500).json({ error: "Server error getting friend by id"})
       });
   } else {
       next();
