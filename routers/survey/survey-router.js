@@ -1,11 +1,11 @@
 const router = require('express').Router();
 const db = require('../../auth/helpers');
 
-const { validateUserId, checkUserCreds } = require('../../auth/middleware');
+const { validateUserId } = require('../../auth/middleware');
 
-// Update user
+// Update user via survey
 
-router.put('/:user_id', validateUserId, checkUserCreds, (req, res) => {
+router.put('/:user_id', validateUserId, (req, res) => {
     const { user_id } = req.params;
     db.updateUser(user_id, req.body)
     .then(user => {
