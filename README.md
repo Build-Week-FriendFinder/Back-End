@@ -189,15 +189,7 @@ Example request body:
 
 ```
 {
-    "user_id": "6",
-    "name": "Levi",
-    "password": "lambda4ever",
-    "dob": "1994-09-21",
-    "gender": "Male",
-    "coordinates": NULL,
-    "location": NULL,
-    "profile_img": NULL,
-    "bio": "This is my newly updated bio"
+    "updated_key": "updated_value"
 }
 ```
 

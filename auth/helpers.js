@@ -83,7 +83,7 @@ async function updateUser(user_id, changes) {
     ...userInfo,
     ...newInfo
   }
-  console.log(newInfo, userInfo, updatedInfo);
+  
   return db('users')
     .where({user_id})
     .update(updatedInfo);
