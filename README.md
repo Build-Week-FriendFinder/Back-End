@@ -178,12 +178,12 @@ Responds with:
 }
 ```
 
-### Edit/Update User ###
+### User Survey/Update User ###
 
 > Listed endpoint:
->> PUT /user/:user_id
+>> PUT /survey/:user_id
 
-Updates a user's information.
+Updates a user's information via survey. (No auth required)
 
 Example request body:
 
