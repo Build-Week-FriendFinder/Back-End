@@ -76,10 +76,17 @@ async function addHobbyToUser(user_id, hobby) {
   addUserHobby(user_id, hobby_id);
 }
 
-function updateUser(user_id, changes) {
+async function updateUser(user_id, changes) {
+  const newInfo = {...changes};
+  const userInfo = await findUserById(user_id);
+  const updatedInfo = {
+    ...userInfo,
+    ...newInfo
+  }
+  console.log(newInfo, userInfo, updatedInfo);
   return db('users')
-    .where({ user_id })
-    .update(changes);
+    .where({user_id})
+    .update(updatedInfo);
 }
 
 function removeUser(user_id) {

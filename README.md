@@ -191,7 +191,6 @@ Example request body:
 {
     "user_id": "6",
     "name": "Levi",
-    "email": "levi@email.com",
     "password": "lambda4ever",
     "dob": "1994-09-21",
     "gender": "Male",
