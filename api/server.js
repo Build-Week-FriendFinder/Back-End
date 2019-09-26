@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const server = express();
-
+// Add authenticate as a middleware to any route that requires JWT protection.
 const { authenticate } = require('../auth/middleware.js');
 const authRouter = require('../auth/auth-router.js');
 const userRouter = require('../routers/users/user-router');
