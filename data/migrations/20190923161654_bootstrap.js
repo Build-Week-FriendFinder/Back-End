@@ -15,8 +15,7 @@ exports.up = function(knex) {
         .string('password', 255)
         .notNullable();
         users
-        .date('dob')
-        .notNullable();
+        .date('dob');
         users
         .string('gender', 255);
         users
