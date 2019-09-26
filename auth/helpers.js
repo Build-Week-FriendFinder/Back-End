@@ -33,8 +33,9 @@ function findUserByEmail(email) {
   return db('users').where('email', email).first();
 }
 
-function addUser(user) {
-  return db('users').insert(user);
+async function addUser(user) {
+  const [ new_id ] = await db('users').insert(user);
+  return findUserById(new_id);
 }
 
 function findUserById(user_id) {

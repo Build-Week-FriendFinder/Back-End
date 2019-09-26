@@ -38,13 +38,13 @@ function checkUserCreds(req, res, next) {
 };
 
 function checkUserExists(req, res, next) {
-    const { email } = req.body.email
+  const email = req.body.email;
+  console.log(email);
     db.findUserByEmail(email)
-    .first()
     .then(user => {
       if (user && user.email === email) {
         res.status(401).json({ message: 'Email already in use' });
-      } else next();
+      } else {next();}
     })
     .catch(err => {
       console.log(err);
