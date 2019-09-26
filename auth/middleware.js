@@ -39,7 +39,7 @@ function checkUserCreds(req, res, next) {
 
 function checkUserExists(req, res, next) {
     const { email } = req.body.email
-    db.findUserBy({ email } === email)
+    db.findUserByEmail(email)
     .first()
     .then(user => {
       if (user && user.email === email) {
