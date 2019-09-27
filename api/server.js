@@ -16,10 +16,10 @@ server.use(cors());
 server.use(express.json());
 
 server.use('/api/auth', authRouter);
-server.use('/api/user', userRouter);
+server.use('/api/user', authenticate, userRouter);
 server.use('/api/survey', surveyRouter);
-server.use('/api/swipe', swipeRouter);
-server.use('/api/messages', messageRouter);
-server.use('/api/friends', friendsRouter);
+server.use('/api/swipe', authenticate, swipeRouter);
+server.use('/api/messages', authenticate, messageRouter);
+server.use('/api/friends', authenticate, friendsRouter);
 
 module.exports = server;
